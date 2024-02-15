@@ -1,10 +1,16 @@
 package it.epicode.U5W2D2.controllers;
 
 import it.epicode.U5W2D2.entities.Blog;
+import it.epicode.U5W2D2.payloads.NewBlogDTO;
 import it.epicode.U5W2D2.services.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/blogs")
@@ -24,7 +30,7 @@ public class BlogController {
     }
 
     @PostMapping("")
-    public Blog saveNewBook(@RequestBody Blog body) {
+    public Blog save(@RequestBody @Validated NewBlogDTO body, BindingResult validation) {
         return blogsService.save(body);
     }
 
@@ -36,5 +42,12 @@ public class BlogController {
     @DeleteMapping("/{id}")
     public void findByIdAndDelete(@PathVariable int id) {
         blogsService.findByIdAndDelete(id);
+    }
+
+    @PostMapping("/upload")
+    public String uploadExample(@RequestParam("avatar") MultipartFile body) throws IOException {
+        System.out.println(body.getSize());
+        System.out.println(body.getContentType());
+        return blogsService.uploadPicture(body);
     }
 }
